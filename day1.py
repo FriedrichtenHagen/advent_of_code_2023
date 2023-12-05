@@ -54,39 +54,75 @@ with open('code_debugging.txt', 'r') as file:
     list_of_first_numbers_from_start = []
     list_of_first_numbers_from_end = []
 
-
-        
     for line in lines:
         # check for spelled out numbers in line
         spelled_word_starting_indexes = [word for index, word in enumerate(list_of_spelled_numbers) if word in line]
         print(spelled_word_starting_indexes)
 
-        word_start_indexes = {}
-        for word in spelled_word_starting_indexes:
-            word_index = line.find(word)
-            word_start_indexes.append(f'{word}': word_index)
-        first_letter_first_word = min(word_start_indexes.keys())
-        print(first_letter_first_word)
+        # only if there are any spelled numbers in the line
+        if(spelled_word_starting_indexes):
+            word_start_indexes = {}
+            for index, word in enumerate(spelled_word_starting_indexes):
+                word_index = line.find(word)
 
+                # check if this number has already been found
+                if(word in word_start_indexes):
+                    if(word_start_indexes[f"{word}"] < word_index):
+                        # the existing index for that number is smaller
+                        break
+                    else:
+                        # existing index of that number is >= the existing index
+                        # overwrite the existing number
+                        word_start_indexes[f"{word}"] = word_index
+                else:
+                    word_start_indexes[f"{word}"] = word_index
+            print(word_start_indexes)
+
+            first_letter_first_word = min(word_start_indexes.values())
+            first_letter_last_word = max(word_start_indexes.values())
+            print(first_letter_first_word, first_letter_last_word)
+
+            def find_key_by_value(dictionary, target_value):
+                return next((key for key, value in dictionary.items() if value == target_value), None)
+
+            first_number = find_key_by_value(word_start_indexes, first_letter_first_word)
+            # look up first_number string as an int
+            first_number_int = dict_of_numbers[f'{first_number}']
+            last_number = find_key_by_value(word_start_indexes, first_letter_last_word)
+            last_number_int = dict_of_numbers[f'{last_number}']
         # iterate over string from the start
         first_number_from_start = ''
         for index, char in enumerate(line):
             # if the first spelled word index is reached: break
-            if(index == spelled_word_starting_indexes):
-                print('test')
+            if(index == first_letter_first_word):
+                print(first_letter_first_word)
+                list_of_first_numbers_from_start.append(first_number_int)
+                break
             # check if char is single number
             if(char in array_of_numbers):
                 first_number_from_start = char
                 list_of_first_numbers_from_start.append(first_number_from_start)
                 break
                 
+
+
         # iterate over string from the end
         first_number_from_end = ''
-        for char in reversed(line):
+        for index, char in enumerate(reversed(line)):
+            # if the first spelled word index is reached: break
+
+            # it needs to be the last letter of the last word!!!
+            if(index == first_letter_first_word):
+                print(first_letter_first_word)
+                list_of_first_numbers_from_start.append(first_number_int)
+                break
             if(char in array_of_numbers):
                 first_number_from_end = char
                 list_of_first_numbers_from_end.append(first_number_from_end)
-                break        
+                break    
+
+
+
 print('These are the numbers from the start')
 print(list_of_first_numbers_from_start)
 print('These are the numbers from the end')
@@ -95,7 +131,7 @@ print(list_of_first_numbers_from_end)
 # add the two numbers together as strings
 added_numbers = []
 for index, element in enumerate(list_of_first_numbers_from_start):
-    new_number_string = list_of_first_numbers_from_start[index] + list_of_first_numbers_from_end[index]
+    new_number_string = int(list_of_first_numbers_from_start[index]) + int(list_of_first_numbers_from_end[index])
     added_numbers.append(int(new_number_string))
 # calculate the sum of all the resulting numbers
 print('Added numbers:')

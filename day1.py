@@ -27,7 +27,7 @@
 # zoneight234
 # 7pqrstsixteen    
 
-with open('code_debugging.txt', 'r') as file:
+with open('code.txt', 'r') as file:
     # Read the entire content of the file
     content = file.readlines()
     lines = []
@@ -36,86 +36,34 @@ with open('code_debugging.txt', 'r') as file:
         lines.append(stripped_line)
     print(lines)
         
-    # constants
     array_of_numbers = ['0','1','2','3','4','5','6','7','8','9','0']
-    dict_of_numbers = {
-    "one": 1,
-    "two": 2,
-    "three": 3,
-    "four": 4,
-    "five": 5,
-    "six": 6,
-    "seven": 7,
-    "eight": 8,
-    "nine": 9,
-    }
-    list_of_spelled_numbers = list(dict_of_numbers)
 
     list_of_first_numbers_from_start = []
     list_of_first_numbers_from_end = []
 
     for line in lines:
-        # check for spelled out numbers in line
-        spelled_word_starting_indexes = [word for index, word in enumerate(list_of_spelled_numbers) if word in line]
-        print(spelled_word_starting_indexes)
+        # replace spelled numbers:
+        line = line.replace('one', 'one1one')
+        line = line.replace('two', 'two2two')
+        line = line.replace('three', 'three3three')
+        line = line.replace('four', 'four4four')
+        line = line.replace('five', 'five5five')
+        line = line.replace('six', 'six6six')
+        line = line.replace('seven', 'seven7seven')
+        line = line.replace('eight', 'eight8eight')
+        line = line.replace('nine', 'nine9nine')
 
-        # only if there are any spelled numbers in the line
-        if(spelled_word_starting_indexes):
-            word_start_indexes = {}
-            for index, word in enumerate(spelled_word_starting_indexes):
-                word_index = line.find(word)
-
-                # check if this number has already been found
-                if(word in word_start_indexes):
-                    if(word_start_indexes[f"{word}"] < word_index):
-                        # the existing index for that number is smaller
-                        break
-                    else:
-                        # existing index of that number is >= the existing index
-                        # overwrite the existing number
-                        word_start_indexes[f"{word}"] = word_index
-                else:
-                    word_start_indexes[f"{word}"] = word_index
-            print(word_start_indexes)
-
-            first_letter_first_word = min(word_start_indexes.values())
-            first_letter_last_word = max(word_start_indexes.values())
-            print(first_letter_first_word, first_letter_last_word)
-
-            def find_key_by_value(dictionary, target_value):
-                return next((key for key, value in dictionary.items() if value == target_value), None)
-
-            first_number = find_key_by_value(word_start_indexes, first_letter_first_word)
-            # look up first_number string as an int
-            first_number_int = dict_of_numbers[f'{first_number}']
-            last_number = find_key_by_value(word_start_indexes, first_letter_last_word)
-            last_number_int = dict_of_numbers[f'{last_number}']
         # iterate over string from the start
         first_number_from_start = ''
         for index, char in enumerate(line):
-            # if the first spelled word index is reached: break
-            if(index == first_letter_first_word):
-                print(first_letter_first_word)
-                list_of_first_numbers_from_start.append(first_number_int)
-                break
             # check if char is single number
             if(char in array_of_numbers):
                 first_number_from_start = char
                 list_of_first_numbers_from_start.append(first_number_from_start)
                 break
-                
-
-
         # iterate over string from the end
         first_number_from_end = ''
-        for index, char in enumerate(reversed(line)):
-            # if the first spelled word index is reached: break
-
-            # it needs to be the last letter of the last word!!!
-            if(index == first_letter_first_word):
-                print(first_letter_first_word)
-                list_of_first_numbers_from_start.append(first_number_int)
-                break
+        for char in reversed(line):
             if(char in array_of_numbers):
                 first_number_from_end = char
                 list_of_first_numbers_from_end.append(first_number_from_end)

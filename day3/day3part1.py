@@ -30,3 +30,4 @@ with open("/Users/friedrichtenhagen/coding/advent_of_code_2023/day3/day3input_de
                    ):
                     # this is a part number!
                     print(f'part number: {tuple}')
+                

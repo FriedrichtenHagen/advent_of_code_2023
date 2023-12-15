@@ -6,43 +6,35 @@ import re
 # 29QA4 847
 # 6A9A9 348
 
-with open("/Users/friedrichtenhagen/coding/advent_of_code_2023/day7/input.txt") as f:
-    data = f.read().strip()
-    lines = data.split("\n")
-
-    hands_and_bids = {}
-    for line in lines:
-        split_line = line.split(' ')
-        hand = split_line[0]
-        bid = split_line[1]
-        hands_and_bids[hand] = bid
-
-    # print(hands_and_bids)
-
-
 # goal is to order DESC
-def compare_hands(hand1, hand2):
+def swap_hands(hand1, hand2):
     # check for type
-    type_hand1 = find_highest_type(hand1)
-    type_hand2 = find_highest_type(hand2)
+    type_hand1 = find_type(hand1)
+    type_hand2 = find_type(hand2)
+    # print(type_hand1, type_hand2)
     # return new order
     if(type_hand1 > type_hand2):
-        return hand1, hand2
+        return False
     elif(type_hand1 < type_hand2):
-        return hand2, hand1
+        return True
     elif(type_hand1 == type_hand2):
         # now the hands need to be compared by the highest first character
+        card_hierachy = '23456789TJQKA'
         for i in range(5):
-            if(hand1[i] > hand2[i]):
-                return hand1, hand2
-            elif(hand1[i] < hand2[i]):
-                return hand2, hand1
+            card_hierachy1 = card_hierachy.index(hand1[i])
+            print(card_hierachy1)
+            card_hierachy2 = card_hierachy.index(hand2[i])
+            print(card_hierachy2)
+            if(card_hierachy1 > card_hierachy2):
+                return False
+            elif(card_hierachy1 < card_hierachy2):
+                return True
         # after going though both hands: they are both identical
         # the order of hands is returned unchanged
-        return hand1, hand2
+        return False
 
 
-def find_highest_type(hand):
+def find_type(hand):
     if(x_of_a_kind(hand, 5)):
         # Five of a kind, where all five cards have the same label: AAAAA
         return 7
@@ -73,7 +65,6 @@ def x_of_a_kind(hand, x):
         else:
             char_count[character] = 1
 
-    print(char_count)
     for count in char_count.values():
         if(count == x):
             return f'{x} of a kind'
@@ -87,7 +78,6 @@ def fullhouse(hand):
             char_count[character] += 1
         else:
             char_count[character] = 1
-    print(char_count)
     if 3 in char_count.values() and 2 in char_count.values():
         return 'full house'
     else:
@@ -100,18 +90,36 @@ def twopairs(hand):
             char_count[character] += 1
         else:
             char_count[character] = 1
-    print(char_count)
     if sum(value == 2 for value in char_count.values()):
         return 'two pairs'
     else:
         return None
-# print(x_of_a_kind('JJJJJ', 5))
-# print(x_of_a_kind('JJJ5J', 4))
-# print(x_of_a_kind('JdJJ5', 3))
-# print(x_of_a_kind('5d5JJ', 2))
-# print(x_of_a_kind('mlkJo', 1))
-# print(x_of_a_kind('dfert', 0))
-# print(fullhouse('JddJJ'))
-# print(twopairs('kkdid'))
 
-print(compare_hands('kkkld', 'dkeli'))
+def sort(list_of_hands):
+    swapped_in_this_iteration = False
+    print(list_of_hands)
+    for i in range(len(list_of_hands)-1):
+        # compare i and i+1
+        hand1 = list_of_hands[i]['hand']
+        hand2 = list_of_hands[i+1]['hand']
+        print(f'Hand1: {hand1}, Hand2:{hand2}')
+        swap = swap_hands(hand1, hand2)
+        print(f'Swap? {swap}')
+        if(swap):
+            list_of_hands[i], list_of_hands[i+1] = list_of_hands[i+1], list_of_hands[i]
+    print(list_of_hands)
+
+
+
+with open("/Users/friedrichtenhagen/coding/advent_of_code_2023/day7/input_debugging.txt") as f:
+    data = f.read().strip()
+    lines = data.split("\n")
+
+    hands_and_bids = []
+    for line in lines:
+        split_line = line.split(' ')
+        hand = split_line[0]
+        bid = split_line[1]
+        hands_and_bids.append({'hand': hand, 'bid': bid})
+  
+    sort(hands_and_bids)

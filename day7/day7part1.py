@@ -1,5 +1,5 @@
 import re
-
+import pprint
 #  A, K, Q, J, T, 9, 8, 7, 6, 5, 4, 3, 2
 
 # JJJJJ 435
@@ -22,9 +22,9 @@ def swap_hands(hand1, hand2):
         card_hierachy = '23456789TJQKA'
         for i in range(5):
             card_hierachy1 = card_hierachy.index(hand1[i])
-            print(card_hierachy1)
+            print(f'card hierachy: {card_hierachy1}')
             card_hierachy2 = card_hierachy.index(hand2[i])
-            print(card_hierachy2)
+            print(f'card hierachy: {card_hierachy2}')
             if(card_hierachy1 > card_hierachy2):
                 return False
             elif(card_hierachy1 < card_hierachy2):
@@ -68,8 +68,8 @@ def x_of_a_kind(hand, x):
     for count in char_count.values():
         if(count == x):
             return f'{x} of a kind'
-        else:
-            return None
+
+    return None
 
 def fullhouse(hand):
     char_count = {}
@@ -90,28 +90,35 @@ def twopairs(hand):
             char_count[character] += 1
         else:
             char_count[character] = 1
-    if sum(value == 2 for value in char_count.values()):
+    if sum(value == 2 for value in char_count.values()) == 2 :
         return 'two pairs'
     else:
         return None
 
+# bubble sort
 def sort(list_of_hands):
-    swapped_in_this_iteration = False
+    swapped_in_this_iteration = True
     print(list_of_hands)
-    for i in range(len(list_of_hands)-1):
-        # compare i and i+1
-        hand1 = list_of_hands[i]['hand']
-        hand2 = list_of_hands[i+1]['hand']
-        print(f'Hand1: {hand1}, Hand2:{hand2}')
-        swap = swap_hands(hand1, hand2)
-        print(f'Swap? {swap}')
-        if(swap):
-            list_of_hands[i], list_of_hands[i+1] = list_of_hands[i+1], list_of_hands[i]
-    print(list_of_hands)
+    while(swapped_in_this_iteration):
+        swapped_in_this_iteration = False
+        for i in range(len(list_of_hands)-1):
+            # compare i and i+1
+            hand1 = list_of_hands[i]['hand']
+            hand2 = list_of_hands[i+1]['hand']
+            print(f'Hand1: {hand1}, Hand2:{hand2}')
+            swap = swap_hands(hand1, hand2)
+            print(f'Swap? {swap}')
+            if(swap):
+                list_of_hands[i], list_of_hands[i+1] = list_of_hands[i+1], list_of_hands[i]
+                swapped_in_this_iteration = True
+    # print(list_of_hands)
+    for hand in list_of_hands:
+        print(hand)
+    return list_of_hands
 
 
 
-with open("/Users/friedrichtenhagen/coding/advent_of_code_2023/day7/input_debugging.txt") as f:
+with open("/Users/friedrichtenhagen/coding/advent_of_code_2023/day7/input.txt") as f:
     data = f.read().strip()
     lines = data.split("\n")
 
@@ -122,4 +129,17 @@ with open("/Users/friedrichtenhagen/coding/advent_of_code_2023/day7/input_debugg
         bid = split_line[1]
         hands_and_bids.append({'hand': hand, 'bid': bid})
   
-    sort(hands_and_bids)
+    sorted_list_of_hands = sort(hands_and_bids)
+    ascending_list = sorted_list_of_hands[::-1]
+    print(ascending_list)
+
+    # Now, you can determine the total winnings of this set of hands by 
+    # adding up the result of multiplying each hand's bid with its rank
+    total_winnings = 0
+    for index, hand in enumerate(ascending_list):
+        total_winnings += int(hand['bid']) * (index+1)
+
+    print(f'Total winnings: {total_winnings}')
+
+
+

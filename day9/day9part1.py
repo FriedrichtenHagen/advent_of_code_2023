@@ -1,8 +1,7 @@
 # 24 38 52 66 80 94 108 122 136 150 164 178 192 206 220 234 248 262 276 290 304
 
-
 def extract_from_input():
-    with open("/Users/friedrichtenhagen/coding/advent_of_code_2023/day9/input.txt") as f:
+    with open("/Users/friedrichtenhagen/coding/advent_of_code_2023/day9/input_debug.txt") as f:
         data = f.read().strip()
         lines = data.split("\n")
         list_of_histories = []
@@ -11,7 +10,10 @@ def extract_from_input():
             list_of_histories.append(list_of_values)
     return list_of_histories
 
-def extrapolate_history(history):
+def extrapolate_history(history_string):
+    # convert strings to numbers
+    history = [int(digit) if digit.isdigit() or (digit[0] == '-' and digit[1:].isdigit()) else None for digit in history_string]
+    # print(history)
     two_dimensional_difference_list = [history]
     recursive_difference_calculator(history, two_dimensional_difference_list)
     # print(two_dimensional_difference_list)
@@ -34,13 +36,14 @@ def extrapolate_history(history):
         c = a + difference
         reversed_difference_list[row_index + 1].append(c)
     forecasted_difference_list = reversed_difference_list[::-1]
-    print('Updated reversed list:')
+    print('forecasted difference list:')
     for list in forecasted_difference_list:
         print(list)
 
-
     # save final next value (top row, predicted number)
-
+    forecasted_value = forecasted_difference_list[0][-1]
+    print(f'Forecasted value: {forecasted_value}')
+    return forecasted_value
 
 def recursive_difference_calculator(list_of_numbers, two_dimensional_difference_list):
             difference_list = []
@@ -62,4 +65,15 @@ example_history2 = [5, 4, 13, 36, 73, 128, 229, 462, 1032, 2399, 5601, 12970, 29
 example_history3 = [10, 13, 16, 21, 30, 45]
 
 list_of_histories = extract_from_input()
-extrapolate_history(example_history3)
+# extrapolate_history(example_history2)
+
+def driver():
+    total_sum_of_forecasted_values = 0
+    for history in list_of_histories:
+        total_sum_of_forecasted_values += extrapolate_history(history)
+        print(f'running sum of forecasted histories: {total_sum_of_forecasted_values}')
+    print(f'The total sum of forecasted histories is: {total_sum_of_forecasted_values}')
+
+driver()
+
+# total sum was too high: 1953784207

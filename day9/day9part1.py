@@ -8,6 +8,7 @@ def extract_from_input():
         for line in lines:
             list_of_values = line.split(' ')
             list_of_histories.append(list_of_values)
+            print(list_of_histories)
     return list_of_histories
 
 def extrapolate_history(history_string):

@@ -23,7 +23,7 @@ def read_input():
 possible_directions = {
     '|' : [[-1, 0], [1, 0]],
     '-' : [[0, -1], [0, 1]],
-    'L' : [[-1, 1], [-1, 0]],
+    'L' : [[0, 1], [-1, 0]],
     'J' : [[-1, 0], [0, -1]],
     '7' : [[0, -1], [1, 0]],
     'F' : [[0, 1], [1, 0]],
@@ -68,6 +68,66 @@ def stepper(position, step_counter, path, previous_move):
             stepper([new_position_y, new_position_x], step_counter, path, move)
 
 
+def loop_stepper(start_position):
+    position = start_position
+    move_stack = []
+    path = []
+    step_counter = 0
+    while(maze_matrix[position[0]][position[1]] != 'S' or step_counter == 0):
+        # read current character [y, x]
+        current_character = maze_matrix[position[0]][position[1]]
+        # look up possible moves in dict
+        possible_moves_current_character = possible_directions[current_character]
+        # exclude the inverted previous move! We do not want to go backwards
+        if move_stack:
+            previous_move = move_stack[-1]
+            if(previous_move):
+                possible_moves_current_character = [arr for arr in possible_moves_current_character if arr != [-previous_move[0], -previous_move[1]]]
+
+        # go through possible moves
+        # for start on S only take one path of two possible paths
+        if current_character == 'S':
+            move = possible_moves_current_character[0]
+            new_position_y = position[0] + move[0]
+            new_position_x = position[1] + move[1]
+            new_character = maze_matrix[new_position_y][new_position_x]
+            # look up moves of new character
+            possible_moves_new_character = possible_directions[new_character]
+            # check if move from current character matches an inverted move from new character
+            if([-move[0], -move[1]] in possible_moves_new_character):
+                path.append(current_character)
+                step_counter += 1
+                move_stack.append(move)
+                position = [new_position_y, new_position_x]
+                print(path)
+                print(step_counter)
+
+                print(f'move_stack: {move_stack}')
+                # valid move: keep goin'
+        else:
+            for move in possible_moves_current_character:
+                new_position_y = position[0] + move[0]
+                new_position_x = position[1] + move[1]
+                new_character = maze_matrix[new_position_y][new_position_x]
+                # look up moves of new character
+                possible_moves_new_character = possible_directions[new_character]
+                # check if move from current character matches an inverted move from new character
+                if([-move[0], -move[1]] in possible_moves_new_character):
+                    path.append(current_character)
+                    step_counter += 1
+                    move_stack.append(move)
+                    position = [new_position_y, new_position_x]
+                    # print(path)
+                    print(step_counter)
+
+                    # print(f'move_stack: {move_stack}')
+                    # valid move: keep goin'
+    # S has been reached
+    return {
+                'position': position,
+                'steps': step_counter,
+                'path': path
+            }
 
 maze_matrix = read_input()
 
@@ -81,7 +141,7 @@ def find_s(searched_character):
 position_of_s = find_s('S')
 
 
-result = stepper(position_of_s, 0, [], None)
+result = loop_stepper(position_of_s)
 print(result)
 
-        # what letter is S?
+# what letter is S?

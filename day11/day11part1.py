@@ -21,19 +21,21 @@ def expand_universe():
     # expand lines
     copy_columns = lines[:]
     columns_added = 0
-    for column_index in range(len(copy_columns)):
+    for column_index in range(len(copy_columns[0])):
         column_is_empty = True
         for row_index, row in enumerate(copy_columns):
             if(row[column_index] == '#'):
                 column_is_empty = False
         if(column_is_empty):
-            for row_index2, row in enumerate(copy_columns):
+            columns_added += 1
+            for row_index2, row2 in enumerate(copy_columns):
                 # add '.' to each row on that column_index
-                index_to_insert = column_index
-                row_add = lines[row_index2][:index_to_insert] + 'fried' + lines[row_index2][index_to_insert:]
+                index_to_insert = column_index+columns_added
+                row_add = lines[row_index2][:index_to_insert] + '.' + lines[row_index2][index_to_insert:]
                 # replace row with row with added '.'
                 lines[row_index2] = row_add
-                columns_added += 1
+        
+        
 
 
 expand_universe()

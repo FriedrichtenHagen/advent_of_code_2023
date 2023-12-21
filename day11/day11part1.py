@@ -1,8 +1,8 @@
-with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day11/input_debugging.txt') as f:
+with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day11/input.txt') as f:
     lines = f.read().split('\n')
     for line in lines:
         print(line)
-    print('llllllll')
+    print('_____________separation_______________')
 
 
 
@@ -35,9 +35,27 @@ def expand_universe():
                 # replace row with row with added '.'
                 lines[row_index2] = row_add
         
-        
+def find_galaxies_and_rename():
+    galaxy_counter = 0
+    renamed_galaxy_list = []
+    for line_index, line in enumerate(lines):
+        galaxy_line = ''
+        indices = [i for i, char in enumerate(line) if char == '#']
+        line_copy = list(line[:])
+
+        for i in indices:
+            line_copy[i] = galaxy_counter
+            galaxy_counter += 1
+        renamed_galaxy_list.append(line_copy)
+
+    for re_line in renamed_galaxy_list:
+        print(re_line)
+    
+
+
 
 
 expand_universe()
 for line in lines:
     print(line)
+find_galaxies_and_rename()

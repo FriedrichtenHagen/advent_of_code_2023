@@ -2,7 +2,8 @@ import re
 
 
 def check_for_symmetry(pattern_lists):
-    
+    total_sum_horizontal = 0
+    total_sum_vertical = 0
     for pattern_list in pattern_lists:
         # print(pattern_list)
         for line in pattern_list:
@@ -23,6 +24,7 @@ def check_for_symmetry(pattern_lists):
             if(cut_reversed_upper_rows == cut_lower_rows):
                 print(f'horizontal symmetry line above row {row_index}')
                 number_of_rows_above_each_horizontal_line_of_reflection = row_index + 1
+                total_sum_horizontal += row_index + 1
             # also add 100 multiplied by the number of rows above each horizontal line of reflection
             # ...
 
@@ -45,10 +47,14 @@ def check_for_symmetry(pattern_lists):
             if(cut_reversed_upper_rows == cut_lower_columns):
                 print(f'vertical symmetry line to the right of column {column_index}')
                 number_of_columns_left_of_vertical_line_of_reflection = column_index + 1
+                total_sum_vertical += column_index + 1
             # add up the number of columns to the left of each vertical line of reflection
+        # sum up the number of lines above each reflection row
+        # add up the numbers of columns to the left of each vertical line of reflection
+    result = total_sum_horizontal * 100 + total_sum_vertical
+    return result
 
-
-with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day13/debug.txt') as f:
+with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day13/input.txt') as f:
     patterns = re.split(r'\n\n', f.read())
 
     total_pattern_list = []
@@ -57,4 +63,5 @@ with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day13/debug.txt')
         total_pattern_list.append(pattern_list)
 
     # print(total_pattern_list)
-    check_for_symmetry(total_pattern_list)
+    total_result = check_for_symmetry(total_pattern_list)
+    print(f'total result: {total_result}')

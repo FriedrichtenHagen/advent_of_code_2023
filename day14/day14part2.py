@@ -1,4 +1,4 @@
-def move_line_north(start_coordinates, board):
+def move_rock(start_coordinates, board):
     current_row = start_coordinates[0]
     current_column = start_coordinates[1]
     rock_was_moved = False
@@ -18,7 +18,7 @@ def move_line_north(start_coordinates, board):
 def tilt_board(board):
     for line_index, line in enumerate(board):
         for character_index, character in enumerate(line):
-            move_line_north([line_index, character_index], board)
+            move_rock([line_index, character_index], board)
 
 def calculate_load(tilted_board):
     # multiple the number of rocks in each row with the inverted index and sum these values up
@@ -29,15 +29,36 @@ def calculate_load(tilted_board):
                 total_result += len(tilted_board) - row_index
     return total_result
 
-with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day14/input.txt') as f:
+def transpose_matrix(board):
+    # pivot the board
+    board = [list(i) for i in zip(*board)]
+    board = [row[::-1] for row in board]
+    return board
+
+
+with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day14/debug.txt') as f:
     board = f.read().split()
     print('original board')
     for line in board:
         print(line)
     print('________')
 
-    # board is list of lists
+    # tilt board to north
     tilt_board(board)
+    print('first tilt:')
+    for line in board:
+        print(line)
+    # start cycle
+    # West
+    board = transpose_matrix(board)
+    print('transposed:')
+    for line in board:
+        print(line)
+    tilt_board(board)
+    print('tilt west')
+    for line in board:
+        print(line)
+
 
     print('final board:')
     for line in board:

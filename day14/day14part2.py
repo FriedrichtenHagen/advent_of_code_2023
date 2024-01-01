@@ -35,6 +35,27 @@ def transpose_matrix(board):
     board = [row[::-1] for row in board]
     return board
 
+def cycle(board, number_of_cycles):
+    list_of_board_states = []
+    for f in range(number_of_cycles):
+        for i in range(4):
+            # tilt board to north
+            tilt_board(board)
+            print(f'result of cycle {f}, direction {i}:')
+            # for line in board:
+            #     print(line)
+
+            board = transpose_matrix(board)
+            # print('transposed:')
+            # for line in board:
+            #     print(line)
+        if board in list_of_board_states:
+            print(f)
+            break
+        else:
+            list_of_board_states.append(board)
+        print(list_of_board_states)
+    return board
 
 with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day14/debug.txt') as f:
     board = f.read().split()
@@ -43,23 +64,7 @@ with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day14/debug.txt')
     for line in board:
         print(line)
     print('________')
-
-    # tilt board to north
-    tilt_board(board)
-    print('result of first tilt:')
-    for line in board:
-        print(line)
-    # start cycle
-    # West
-    board = transpose_matrix(board)
-    print('transposed:')
-    for line in board:
-        print(line)
-    tilt_board(board)
-    print('tilt west')
-    for line in board:
-        print(line)
-
+    board = cycle(board, 1000000000)
 
     print('final board:')
     for line in board:

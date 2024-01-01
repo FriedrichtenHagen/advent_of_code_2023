@@ -10,10 +10,10 @@ def move_rock(start_coordinates, board):
             current_row -= 1
             rock_was_moved = True
         # save 'O' to final position
-        board[current_row] = board[current_row][:current_column] + 'O' + board[current_row][current_column + 1:]
+        board[current_row][current_column] = 'O'
         # delete 'O' from start position if O was moved
         if rock_was_moved:
-            board[start_coordinates[0]] = board[start_coordinates[0]][:start_coordinates[1]] + '.' + board[start_coordinates[0]][start_coordinates[1] + 1:]
+            board[start_coordinates[0]][start_coordinates[1]] = '.'
 
 def tilt_board(board):
     for line_index, line in enumerate(board):
@@ -39,13 +39,14 @@ def transpose_matrix(board):
 with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day14/debug.txt') as f:
     board = f.read().split()
     print('original board')
+    board = [list(string) for string in board]
     for line in board:
         print(line)
     print('________')
 
     # tilt board to north
     tilt_board(board)
-    print('first tilt:')
+    print('result of first tilt:')
     for line in board:
         print(line)
     # start cycle

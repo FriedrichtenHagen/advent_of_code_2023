@@ -41,7 +41,7 @@ def cycle(board, number_of_cycles):
         for i in range(4):
             # tilt board to north
             tilt_board(board)
-            print(f'result of cycle {f}, direction {i}:')
+            # print(f'result of cycle {f}, direction {i}:')
             # for line in board:
             #     print(line)
 
@@ -49,12 +49,20 @@ def cycle(board, number_of_cycles):
             # print('transposed:')
             # for line in board:
             #     print(line)
-        if board in list_of_board_states:
-            print(f)
-            break
+        # turn matrix into string
+        stringified_matrix = '\n'.join([' '.join(inner_list) for inner_list in board])
+        if stringified_matrix in list_of_board_states:
+            print(f'cycle reached after {f+1} cycles. From now on each cycle returns the same board')
+            for line in board:
+                print(line)
+            # return {'board': board,
+            #        'cycle_start': f+1}
         else:
-            list_of_board_states.append(board)
-        print(list_of_board_states)
+            list_of_board_states.append(stringified_matrix)
+        #print(list_of_board_states)
+        print('>>>>>>>>>>>')
+        for line in board:
+            print(line)
     return board
 
 with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day14/debug.txt') as f:
@@ -64,11 +72,13 @@ with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day14/debug.txt')
     for line in board:
         print(line)
     print('________')
-    board = cycle(board, 1000000000)
-
+    cycle_result = cycle(board, 15) # 1000000000
+    print(cycle_result)
+    cycle_start = cycle_result['cycle_start'] 
+    final_board = cycle_result['board'] 
     print('final board:')
-    for line in board:
+    for line in final_board:
         print(line)
     
-    result = calculate_load(board)
-    print(result)
+    result = calculate_load(final_board)
+    print(f'Total load is {result}')

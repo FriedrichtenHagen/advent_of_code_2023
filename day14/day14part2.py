@@ -36,30 +36,35 @@ def transpose_matrix(board):
     return board
 
 def cycle(board, number_of_cycles):
-    list_of_board_states = []
+    dict_of_board_states = {}
     for f in range(number_of_cycles):
         for i in range(4):
             # tilt board to north
             tilt_board(board)
-            # print(f'result of cycle {f}, direction {i}:')
-            # for line in board:
-            #     print(line)
-
             board = transpose_matrix(board)
-            # print('transposed:')
-            # for line in board:
-            #     print(line)
-        # turn matrix into string
+
+        # cycle detection   
         stringified_matrix = '\n'.join([' '.join(inner_list) for inner_list in board])
-        if stringified_matrix in list_of_board_states:
-            print(f'cycle reached after {f+1} cycles. From now on each cycle returns the same board')
+        if stringified_matrix in dict_of_board_states.values():
+
+            first_instance_of_repeated_pattern = None
+            for key, value in dict_of_board_states.items():
+                if value == stringified_matrix:
+                    first_instance_of_repeated_pattern = key
+                    break
+            
+            cycle_length = f - int(first_instance_of_repeated_pattern)
+            cycle_start = int(first_instance_of_repeated_pattern)
+            # cycle_start + number of cycles + left of cycles
+            number_of_necessary_cycles = cycle_start + 1000000000%cycle_length
+            print(f'necessary cycles excluding cycles: {number_of_necessary_cycles}')
+            print(f'first cycle finished after {f+1} cycles. cycle length: {cycle_length}. cycle start: {int(first_instance_of_repeated_pattern) + 1}')
             for line in board:
                 print(line)
-            # return {'board': board,
-            #        'cycle_start': f+1}
+                return {'board': board,
+                    'cycle_start': f+1}
         else:
-            list_of_board_states.append(stringified_matrix)
-        #print(list_of_board_states)
+            dict_of_board_states[f'{f}'] = stringified_matrix
         print('>>>>>>>>>>>')
         for line in board:
             print(line)
@@ -72,13 +77,13 @@ with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day14/debug.txt')
     for line in board:
         print(line)
     print('________')
-    cycle_result = cycle(board, 15) # 1000000000
-    print(cycle_result)
-    cycle_start = cycle_result['cycle_start'] 
-    final_board = cycle_result['board'] 
+    cycle_result = cycle(board, 8) # 1000000000
+    # print(cycle_result)
+    # cycle_start = cycle_result['cycle_start'] 
+    # final_board = cycle_result['board'] 
     print('final board:')
-    for line in final_board:
+    for line in cycle_result:
         print(line)
     
-    result = calculate_load(final_board)
+    result = calculate_load(cycle_result)
     print(f'Total load is {result}')

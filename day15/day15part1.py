@@ -1,5 +1,3 @@
-
-
 def hash_function(input_string):
     current_value = 0
     for character in input_string:    

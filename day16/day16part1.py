@@ -1,4 +1,5 @@
 import numpy as np
+import copy
 
 # directions
 directions = {
@@ -32,7 +33,20 @@ def mirror_stepper(current_pos: list, direction: list):
             mirror_stepper([current_pos[0] + direction[0], current_pos[1] + direction[1]], direction ) 
         else:
             return
-            
+    elif(current_character == direction_symbol):
+        # we have been here before! This is a cycle
+        return
+    elif(current_character in ['v', '<', '>', '^']):
+        # set direction symbol
+        layout[current_pos[0]][current_pos[1]] = direction_symbol
+
+        # boundary check
+        y = current_pos[0] + direction[0]
+        x = current_pos[1] + direction[1]
+        if 0 <= y <= len(layout)-1 and 0 <= x <= len(layout[0])-1:
+            mirror_stepper([current_pos[0] + direction[0], current_pos[1] + direction[1]], direction ) 
+        else:
+            return
     elif(current_character == '\\'):
         
         # change of directions:
@@ -131,17 +145,29 @@ def mirror_stepper(current_pos: list, direction: list):
     else:
         print('mistake. character not found')
 
-with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day16/debug.txt') as input:
+with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day16/input.txt') as input:
     input = input.read().splitlines()
     layout = []
     for line in input:
         char_list = [char for char in line]
         layout.append(char_list)
     
-    for char_list in layout:
-        print(char_list)
     # only saves the visited, 'energized' fields
-    energized_layout = layout[:]
+    energized_layout = copy.deepcopy(layout)
     # start in left upper corner, going right
     mirror_stepper([0, 0], [0, 1])
+    print('direction arrow copy:')
+    for line in layout:
+        print(line)
+    print('energized copy:')
+    for line in energized_layout:
+        print(''.join(line))
 
+
+    count_hash = sum(row.count("#") for row in energized_layout)
+    print(count_hash)
+
+
+# add a case that checks for matching current character with direction character
+# this prevents repeating cycles
+# handle fields with multiple arrows

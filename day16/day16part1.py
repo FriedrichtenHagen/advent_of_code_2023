@@ -1,4 +1,3 @@
-import numpy as np
 import copy
 
 # directions
@@ -168,6 +167,4 @@ with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day16/input.txt')
     print(count_hash)
 
 
-# add a case that checks for matching current character with direction character
-# this prevents repeating cycles
 # handle fields with multiple arrows

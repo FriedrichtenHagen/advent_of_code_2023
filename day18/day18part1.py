@@ -135,28 +135,51 @@ class PoolDigger:
     def fill_trench():
         for row_index, row in enumerate(PoolDigger.dig_plan):
             for column_index, column in enumerate(PoolDigger.dig_plan[row_index]):
-                inside_pool = False
-                # check in four directions
-                # if we cross a '#' in all four directions we know that we are inside the pool
+                if PoolDigger.dig_plan[row_index][column_index] == '.':
+                    inside_pool_right = False
+                    inside_pool_left = False
+                    inside_pool_up = False
+                    inside_pool_down = False
+                    # check in four directions
+                    # if we cross a '#' in all four directions we know that we are inside the pool
 
-                # add border checking to each direction
+                    # add border checking to each direction
 
-                # right
-                fields_to_the_right = len(row) - column_index
-                for f in range(fields_to_the_right):
-                    if PoolDigger.dig_plan[row_index][column_index + f + 1] == '#':
-                        inside_pool = True
-                    else: 
-                        continue
-                # left
-                fields_to_the_left = column_index
-                for f in range(fields_to_the_left):
-                    if PoolDigger.dig_plan[row_index][column_index - f - 1] == '#':
-                        inside_pool = True
-                    else: 
-                        continue
-                if inside_pool:
-                    PoolDigger.dig_plan[row_index][column_index] = '#'
+                    # right
+                    fields_to_the_right = len(row) - (column_index + 1)
+                    for f in range(fields_to_the_right):
+                        if PoolDigger.dig_plan[row_index][column_index + f + 1] == '#':
+                            inside_pool_right = True
+                            break
+                        else: 
+                            continue
+                    # left
+                    fields_to_the_left = column_index
+                    for f in range(fields_to_the_left):
+                        if PoolDigger.dig_plan[row_index][column_index - f - 1] == '#':
+                            inside_pool_left = True
+                            break
+                        else: 
+                            continue
+                    # up
+                    fields_to_the_top = row_index
+                    for f in range(fields_to_the_top):
+                        if PoolDigger.dig_plan[row_index - f - 1][column_index] == '#':
+                            inside_pool_up = True
+                            break
+                        else: 
+                            continue
+                    # down
+                    fields_to_the_bottom = len(PoolDigger.dig_plan) - (row_index + 1)
+                    for f in range(fields_to_the_bottom):
+                        if PoolDigger.dig_plan[row_index + f + 1][column_index] == '#':
+                            inside_pool_down = True
+                            break
+                        else: 
+                            continue
+
+                    if inside_pool_right and inside_pool_left and inside_pool_down and inside_pool_up:
+                        PoolDigger.dig_plan[row_index][column_index] = '#'
 
 
     def print_trench_plan():
@@ -174,5 +197,6 @@ if __name__ == "__main__":
 
     PoolDigger.dig_border_trench(instructions_list)
     PoolDigger.print_trench_plan()
+    
     PoolDigger.fill_trench()
     PoolDigger.print_trench_plan()

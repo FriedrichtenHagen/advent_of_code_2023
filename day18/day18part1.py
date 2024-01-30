@@ -1,5 +1,5 @@
 
-
+import pandas as pd
 
 class PoolDigger:
     """A class for managing pool digging operations."""
@@ -164,6 +164,7 @@ class PoolDigger:
                             break
                         else: 
                             continue
+
                     # down
                     fields_to_the_bottom = len(self.dig_plan) - (row_index + 1)
                     for f in range(fields_to_the_bottom):
@@ -202,6 +203,8 @@ if __name__ == "__main__":
     pool_digger.dig_border_trench(instructions_list)
     print('trench border')
     pool_digger.print_trench_plan()
+    # Convert the list of lists to a DataFrame
+    df = pd.DataFrame(pool_digger.dig_plan)
     
     pool_digger.fill_trench()
     print('filled trench:')

@@ -15,8 +15,8 @@ class MachinePartOrganizer():
         with open(self.INPUT_PATH) as i:
             parts = i.read().split('\n\n')
             # read out workflows
-            self.workflows = parts[0].split('\n')
-            for workflow_string in self.workflows:
+            workflow_strings = parts[0].split('\n')
+            for workflow_string in workflow_strings:
                 name = workflow_string.split('{')[0]
                 conditions = workflow_string.split('{')[1][0:-1].split(',')
                 
@@ -48,11 +48,39 @@ class MachinePartOrganizer():
                     'fallback_target': fallback_target
                 }
 
-                pprint.pprint(workflow)
-
+                
+                self.workflows.append(workflow)
+                pprint.pprint(self.workflows)
 
             # read out machine parts
-            self.machine_parts = parts[1].split('\n')
+            machine_part_strings = parts[1].split('\n')
+            for machine_part_string in machine_part_strings:
+                # split each attribute string
+                attributes_strings = machine_part_string.split(',')
+                # remove { } from string
+                # ...
+
+                
+                # find x attribute value
+                equals_index_x = attributes_strings[0].find('=')
+                x = machine_part_string[equals_index_x + 1:]
+                # find m attribute value
+                equals_index_m = attributes_strings[1].find('=')
+                m = machine_part_string[equals_index_m + 1:]
+                # find a attribute value
+                equals_index_a = attributes_strings[2].find('=')
+                a = machine_part_string[equals_index_a + 1:]
+                # find s attribute value
+                equals_index_s = attributes_strings[3].find('=')
+                s = machine_part_string[equals_index_s + 1:]
+
+                machine_part = {
+                    'x': x,
+                    'm': m,
+                    'a': a,
+                    's': s
+                }
+                print(machine_part)
 
 
 # start at in

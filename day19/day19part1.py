@@ -31,7 +31,7 @@ class MachinePartOrganizer():
                         condition = {
                             'category': category,
                             'comparison_operator': comparison_operator,
-                            'value': value,
+                            'value': int(value),
                             'target': target
                         }
                         conditions_dicts.append(condition)
@@ -53,22 +53,18 @@ class MachinePartOrganizer():
             for machine_part_string in machine_part_strings:
                 # split each attribute string
                 attributes_strings = machine_part_string.split(',')
-                # remove { } from string
-                # ...
-
-
                 # find x attribute value
                 equals_index_x = attributes_strings[0].find('=')
-                x = attributes_strings[0][equals_index_x + 1:]
+                x = int(attributes_strings[0][equals_index_x + 1:])
                 # find m attribute value
                 equals_index_m = attributes_strings[1].find('=')
-                m = attributes_strings[1][equals_index_m + 1:]
+                m = int(attributes_strings[1][equals_index_m + 1:])
                 # find a attribute value
                 equals_index_a = attributes_strings[2].find('=')
-                a = attributes_strings[2][equals_index_a + 1:]
+                a = int(attributes_strings[2][equals_index_a + 1:])
                 # find s attribute value
                 equals_index_s = attributes_strings[3].find('=')
-                s = attributes_strings[3][equals_index_s + 1:]
+                s = int(attributes_strings[3][equals_index_s + 1:-1])
 
                 machine_part = {
                     'x': x,
@@ -98,7 +94,9 @@ class MachinePartOrganizer():
     def evaluate_workflow(self, workflow, current_machine_part):
         # go through all conditions of this workflow
         for condition in workflow['conditions']:
-            self.evaluate_condition(condition, current_machine_part)
+            # prevent the condition loop from continuing if a condition is met
+            if self.evaluate_condition(condition, current_machine_part):
+                break
 
         # if current_machine_part has not been accepted or rejected: go to fallback value
         if 'accepted_status' not in current_machine_part:
@@ -131,6 +129,11 @@ class MachinePartOrganizer():
                     # move to target workflow
                     target_workflow = self.find_workflow_by_name(target)
                     self.evaluate_workflow(target_workflow, current_machine_part)
+                return True
+            else:
+                # condition is not met!
+                return False
+
         elif comparison_operator == '>':
             if current_machine_part[f'{category}'] > value:
                 # start evaluating target workflow
@@ -143,14 +146,24 @@ class MachinePartOrganizer():
                     # move to target workflow
                     target_workflow = self.find_workflow_by_name(target)
                     self.evaluate_workflow(target_workflow, current_machine_part)  
+                return True
+            else:
+                # condition is not met!
+                return False
+                
         else:
             raise ValueError(f'invalid comparison_operator found: {comparison_operator}')
         
-    def calcute_sum_of_rating_numbers():
+    def calcute_sum_of_rating_numbers(self):
         # calculate sum of ratings for accepted machine parts
-        pass
-        # what do you get if you add together all of the rating numbers for all of the parts that ultimately get accepted?
-        # Adding all of the ratings for all of the accepted parts gives the sum total of 19114.
+        total_sum = 0
+
+        accepted_machine_parts = (machine_part for machine_part in self.machine_parts if machine_part['accepted_status'] == True)
+        for machine_part in accepted_machine_parts:
+            machine_part_sum = int(machine_part['a']) + int(machine_part['m']) + int(machine_part['s']) + int(machine_part['x'])
+            total_sum += machine_part_sum
+        return total_sum
+
 
 if __name__ == "__main__":
     input_path = '/Users/friedrichtenhagen/coding/advent_of_code_2023/day19/debug.txt'
@@ -165,3 +178,7 @@ if __name__ == "__main__":
     print('Evaluated machine parts:')
     pprint.pprint(part1.machine_parts)
 
+    # what do you get if you add together all of the rating numbers for all of the parts that ultimately get accepted?
+    # Adding all of the ratings for all of the accepted parts gives the sum total of 19114.
+    result = part1.calcute_sum_of_rating_numbers()
+    print(f'The total sum is {result}')

@@ -48,32 +48,6 @@ class MachinePartOrganizer():
                 
                 self.workflows.append(workflow)
 
-            # read out machine parts
-            machine_part_strings = parts[1].split('\n')
-            for machine_part_string in machine_part_strings:
-                # split each attribute string
-                attributes_strings = machine_part_string.split(',')
-                # find x attribute value
-                equals_index_x = attributes_strings[0].find('=')
-                x = int(attributes_strings[0][equals_index_x + 1:])
-                # find m attribute value
-                equals_index_m = attributes_strings[1].find('=')
-                m = int(attributes_strings[1][equals_index_m + 1:])
-                # find a attribute value
-                equals_index_a = attributes_strings[2].find('=')
-                a = int(attributes_strings[2][equals_index_a + 1:])
-                # find s attribute value
-                equals_index_s = attributes_strings[3].find('=')
-                s = int(attributes_strings[3][equals_index_s + 1:-1])
-
-                machine_part = {
-                    'x': x,
-                    'm': m,
-                    'a': a,
-                    's': s
-                }
-                self.machine_parts.append(machine_part)
-
     def evaluate_parts(self):
         # go through all machine parts
         for machine_part in self.machine_parts:
@@ -163,7 +137,7 @@ class MachinePartOrganizer():
             total_sum += machine_part_sum
         return total_sum
     
-    def calculate_number_of_machine_part_combinations(rating_range):
+    def calculate_number_of_machine_part_combinations(self, rating_range):
         machine_part_list = []
         for x in range(rating_range):
             for m in range(rating_range):
@@ -184,17 +158,19 @@ if __name__ == "__main__":
     part1 = MachinePartOrganizer(input_path)
     # parse the input and store in machine_parts and workflows
     part1.read_input()
+    part1.machine_parts = part1.calculate_number_of_machine_part_combinations(4000)
+
     pprint.pprint(part1.workflows)
     pprint.pprint(part1.machine_parts)
-    # run the parts through the workflow
-    # each part will either be rejected (R) or accepted (A)
-    part1.evaluate_parts()
-    print('Evaluated machine parts:')
-    pprint.pprint(part1.machine_parts)
+    # # run the parts through the workflow
+    # # each part will either be rejected (R) or accepted (A)
+    # part1.evaluate_parts()
+    # print('Evaluated machine parts:')
+    # pprint.pprint(part1.machine_parts)
 
-    # what do you get if you add together all of the rating numbers for all of the parts that ultimately get accepted?
-    # Adding all of the ratings for all of the accepted parts gives the sum total of 19114.
-    result = part1.calcute_sum_of_rating_numbers()
-    print(f'The total sum is {result}')
+    # # what do you get if you add together all of the rating numbers for all of the parts that ultimately get accepted?
+    # # Adding all of the ratings for all of the accepted parts gives the sum total of 19114.
+    # result = part1.calcute_sum_of_rating_numbers()
+    # print(f'The total sum is {result}')
 
 

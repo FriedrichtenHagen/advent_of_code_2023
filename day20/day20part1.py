@@ -10,41 +10,52 @@
 class PulsePropagater():
     def __init__(self):
             self.queue = []
-            # example_queue = ['a', 'd', 'c']
-            self.modules = {}
 
-    def read_input(self):
-        with open('/Users/friedrichtenhagen/coding/advent_of_code_2023/day20/debug.txt.') as i:
+
+            self.flops = {}
+            # high pulse: it is ignored and nothing happens. 
+            # low pulse: 
+            #   if off: turns on and sends a high pulse. 
+            #   If on: turns off and sends a low pulse.
+            # starts at off (False)
+            self.conj = {}
+            # have list of all inputs
+            # initialy low (False) for all inputs
+            # if it remembers high pulses for all inputs, it sends a low pulse; otherwise, it sends a high pulse.
+            self.graph = {}
+
+    def read_input(self, input_path):
+        with open(input_path) as i:
             lines = i.read().split('\n')
             for line in lines:
+                source, target = line.split('->')
+                source = source.strip()
+                dests = target.strip().split(',')
+
+                if source[0] == '%':
+                    source = source[1:]
+                    self.flops[source] = False
+                elif source[0] == '&':
+                    source = source[1:]
+                    self.conj[source] = {}
+                self.graph[source] = dests
 
 
-
-
-                # module:
-                modules = {
-                    'a': {
-                        'type': 'conjunction&',
-                        'targets': ['b', 'c']
-                    },
-                    'b': {
-                        # If a flip-flop module receives a high pulse, it is ignored and nothing happens. However, if a flip-flop module receives a low pulse, it flips between on and off. 
-                        # If it was off, it turns on and sends a high pulse. If it was on, it turns off and sends a low pulse.
-                        'type': 'flipflop%',
-                        'targets': ['a', 'c'],
-                        'status': True #False
-                    },
-                    'c': {
-                        'type': 'broadcaster',
-                        'targets': ['a', 'c']
-                    },
-                }
-    def handle_step(self, module_name):
-        # look up module by name in self.modules dict
-
-        pass
+    def fill_conjunctions(self):
+        for source, dests in self.graph.items():
+            for dest in dests:
+                if dest in self.conj:
+                    self.conj[dest][source] = False
+        print(self.conj)
 
     
+if __name__ == "__main__":
+    input_path = '/Users/friedrichtenhagen/coding/advent_of_code_2023/day20/debug.txt'
+    
+    PulseMachine = PulsePropagater()
+    PulseMachine.read_input(input_path)
+    print(PulseMachine.flops)
+    print(PulseMachine.conj)
+    print(PulseMachine.graph)
 
-
-
+    PulseMachine.fill_conjunctions()

@@ -1,4 +1,4 @@
-
+from collections import deque
 # broadcaster -> a, b, c
 # %a -> b
 # %b -> c
@@ -46,8 +46,44 @@ class PulsePropagater():
             for dest in dests:
                 if dest in self.conj:
                     self.conj[dest][source] = False
-        print(self.conj)
 
+    def run(self):
+        q = deque([('button', 'broadcaster', False)])
+        # (sender, receiver, pulse)
+        number_hi = 0
+        number_low = 0
+
+        while q:
+            sender, receiver, pulse = q.popleft()
+
+            # count the pulses. This is needed for the result
+            if pulse:
+                number_hi += 1
+            elif not pulse:
+                number_low += 1
+
+            if receiver in self.flops:
+                # not affected by high pulse
+                if pulse:
+                    return
+                # invert pulse
+                next_pulse = self.flops[receiver] = not self.flops[receiver]
+            elif receiver in self.conj:
+                self.conj[receiver][sender] = pulse
+                next_pulse = not all(self.conjs[receiver].values())
+
+            elif receiver in self.graph:
+                # Neither a flip-flop nor a conjunction, propagate the pulse as is
+                next_pulse = pulse
+            else:
+                # the module is a dead end
+                return
+        
+            # send pulse to all receiver modules
+            for new_receiver in self.graph[receiver]:
+                q.append((receiver, new_receiver, next_pulse))
+
+        return number_hi, number_low
     
 if __name__ == "__main__":
     input_path = '/Users/friedrichtenhagen/coding/advent_of_code_2023/day20/debug.txt'
@@ -59,3 +95,12 @@ if __name__ == "__main__":
     print(PulseMachine.graph)
 
     PulseMachine.fill_conjunctions()
+    print(PulseMachine.conj)
+    tothi = totlo = 0
+    for _ in range(1000):
+        nhi, nlo = PulseMachine.run()
+        tothi += nhi
+        totlo += nlo
+
+    answer = tothi * totlo
+    print('Part 1:', answer)
